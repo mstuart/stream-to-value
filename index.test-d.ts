@@ -1,5 +1,10 @@
 import {expectType} from 'tsd';
-import {streamToString, streamToUint8Array, streamToJson, streamToArray} from './index.js';
+import {
+	streamToString,
+	streamToUint8Array,
+	streamToJson,
+	streamToArray,
+} from './index.js';
 
 const stream = new ReadableStream();
 

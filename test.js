@@ -1,5 +1,10 @@
 import test from 'ava';
-import {streamToString, streamToUint8Array, streamToJson, streamToArray} from './index.js';
+import {
+	streamToString,
+	streamToUint8Array,
+	streamToJson,
+	streamToArray,
+} from './index.js';
 
 function createStringStream(...chunks) {
 	return new ReadableStream({
@@ -33,7 +38,7 @@ function createEmptyStream() {
 	});
 }
 
-// streamToString tests
+// StreamToString tests
 
 test('streamToString - single string chunk', async t => {
 	const stream = createStringStream('hello');
@@ -72,7 +77,7 @@ test('streamToString - unicode content', async t => {
 	t.is(result, 'hello \u{1F600} world');
 });
 
-// streamToUint8Array tests
+// StreamToUint8Array tests
 
 test('streamToUint8Array - single chunk', async t => {
 	const stream = createByteStream([1, 2, 3]);
@@ -107,7 +112,7 @@ test('streamToUint8Array - large chunks', async t => {
 	t.is(result[999], 999 % 256);
 });
 
-// streamToJson tests
+// StreamToJson tests
 
 test('streamToJson - valid JSON object', async t => {
 	const stream = createStringStream('{"key":"value"}');
@@ -144,7 +149,7 @@ test('streamToJson - invalid JSON throws', async t => {
 	await t.throwsAsync(() => streamToJson(stream), {instanceOf: SyntaxError});
 });
 
-// streamToArray tests
+// StreamToArray tests
 
 test('streamToArray - collects string chunks', async t => {
 	const stream = createStringStream('a', 'b', 'c');
