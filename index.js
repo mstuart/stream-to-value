@@ -64,6 +64,7 @@ Consume a `ReadableStream` into an array of chunks.
 export async function streamToArray(readableStream) {
 	const chunks = [];
 
+	// Not using `Array.fromAsync()` here since it requires Node.js 22+ and this package supports Node.js >=20.
 	for await (const chunk of readableStream) {
 		chunks.push(chunk);
 	}
