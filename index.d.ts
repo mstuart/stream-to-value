@@ -43,7 +43,9 @@ await streamToUint8Array(stream);
 //=> Uint8Array [1, 2, 3]
 ```
 */
-export function streamToUint8Array(readableStream: ReadableStream): Promise<Uint8Array>;
+export function streamToUint8Array(
+  readableStream: ReadableStream
+): Promise<Uint8Array>;
 
 /**
 Consume a `ReadableStream` and parse the content as JSON.
@@ -91,4 +93,6 @@ await streamToArray(stream);
 //=> ['a', 'b', 'c']
 ```
 */
-export function streamToArray(readableStream: ReadableStream): Promise<unknown[]>;
+export function streamToArray(
+  readableStream: ReadableStream
+): Promise<unknown[]>;
