@@ -77,6 +77,19 @@ test("streamToString - unicode content", async (t) => {
   t.is(result, "hello \u{1F600} world");
 });
 
+test("streamToString - decodes unicode split across byte chunks", async (t) => {
+  const encoded = new TextEncoder().encode("A\u{1F600}B");
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoded.slice(0, 3));
+      controller.enqueue(encoded.slice(3));
+      controller.close();
+    },
+  });
+
+  t.is(await streamToString(stream), "A\u{1F600}B");
+});
+
 // StreamToUint8Array tests
 
 test("streamToUint8Array - single chunk", async (t) => {
