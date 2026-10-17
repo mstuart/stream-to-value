@@ -11,7 +11,7 @@ export async function streamToString(readableStream) {
   for await (const chunk of readableStream) {
     result +=
       typeof chunk === "string"
-        ? chunk
+        ? decoder.decode() + chunk
         : decoder.decode(chunk, { stream: true });
   }
 
