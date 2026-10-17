@@ -5,14 +5,20 @@ Consume a `ReadableStream` into a string.
 @returns {Promise<string>} The concatenated string content.
 */
 export async function streamToString(readableStream) {
-  const decoder = new TextDecoder();
+  let decoder = new TextDecoder();
+  let byteContentSeen = false;
   let result = "";
 
   for await (const chunk of readableStream) {
-    result +=
-      typeof chunk === "string"
-        ? chunk
-        : decoder.decode(chunk, { stream: true });
+    if (typeof chunk === "string") {
+      if (chunk.length > 0) {
+        result += decoder.decode() + chunk;
+        decoder = new TextDecoder("utf-8", { ignoreBOM: byteContentSeen });
+      }
+    } else {
+      result += decoder.decode(chunk, { stream: true });
+      byteContentSeen ||= chunk.byteLength > 0;
+    }
   }
 
   result += decoder.decode();
