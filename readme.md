@@ -40,7 +40,7 @@ console.log(data);
 
 ### streamToString(readableStream)
 
-String chunks and UTF-8 byte chunks can be mixed. Pending incomplete bytes are flushed before each string chunk, preserving source order.
+String chunks and UTF-8 byte chunks can be mixed. Pending incomplete bytes are flushed before each nonempty string chunk, preserving source order. Empty strings do not interrupt split UTF-8 characters, and later byte-order marks remain part of the content.
 
 Consume a `ReadableStream` into a string. Handles both string and `Uint8Array` chunks.
 
