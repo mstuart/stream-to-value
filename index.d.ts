@@ -93,6 +93,6 @@ await streamToArray(stream);
 //=> ['a', 'b', 'c']
 ```
 */
-export function streamToArray(
-  readableStream: ReadableStream
-): Promise<unknown[]>;
+export function streamToArray<T>(
+  readableStream: ReadableStream<T>
+): Promise<T[]>;
