@@ -34,13 +34,38 @@ Consume a `ReadableStream` into a `Uint8Array`.
 */
 export async function streamToUint8Array(readableStream) {
   const chunks = [];
+  const encoder = new TextEncoder();
+  let pendingSurrogate = "";
   let totalLength = 0;
 
-  for await (const chunk of readableStream) {
-    const bytes =
-      typeof chunk === "string" ? new TextEncoder().encode(chunk) : chunk;
+  const append = (bytes) => {
     chunks.push(bytes);
     totalLength += bytes.length;
+  };
+
+  for await (const chunk of readableStream) {
+    if (typeof chunk === "string") {
+      const text = pendingSurrogate + chunk;
+      const lastCodeUnit = text.charCodeAt(text.length - 1);
+      if (lastCodeUnit >= 0xd8_00 && lastCodeUnit <= 0xdb_ff) {
+        pendingSurrogate = text.slice(-1);
+        append(encoder.encode(text.slice(0, -1)));
+      } else {
+        pendingSurrogate = "";
+        append(encoder.encode(text));
+      }
+    } else {
+      const bytes = new Uint8Array(chunk);
+      if (bytes.length > 0 && pendingSurrogate) {
+        append(encoder.encode(pendingSurrogate));
+        pendingSurrogate = "";
+      }
+      append(bytes);
+    }
+  }
+
+  if (pendingSurrogate) {
+    append(encoder.encode(pendingSurrogate));
   }
 
   const result = new Uint8Array(totalLength);

@@ -6,9 +6,14 @@ import {
   streamToUint8Array,
 } from "./index.js";
 
-const stream = new ReadableStream();
+const stream = new ReadableStream<unknown>();
 
 expectType<Promise<string>>(streamToString(stream));
 expectType<Promise<Uint8Array>>(streamToUint8Array(stream));
 expectType<Promise<unknown>>(streamToJson(stream));
 expectType<Promise<unknown[]>>(streamToArray(stream));
+
+expectType<Promise<number[]>>(streamToArray(new ReadableStream<number>()));
+expectType<Promise<(string | number)[]>>(
+  streamToArray(new ReadableStream<string | number>())
+);
